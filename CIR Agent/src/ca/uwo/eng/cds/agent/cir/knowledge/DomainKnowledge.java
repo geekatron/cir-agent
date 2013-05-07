@@ -3,8 +3,11 @@
  */
 package ca.uwo.eng.cds.agent.cir.knowledge;
 
+import jade.lang.acl.ACLMessage;
+
 import java.util.Stack;
 
+import ca.uwo.eng.cds.agent.cir.capability.communication.Communication;
 import ca.uwo.eng.cds.agent.cir.knowledge.domain.goals.GoalKnowledge;
 import ca.uwo.eng.cds.agent.cir.knowledge.domain.localhistory.History;
 import ca.uwo.eng.cds.agent.cir.knowledge.domain.possiblesolutions.SolutionKnowledge;
@@ -14,11 +17,14 @@ import ca.uwo.eng.cds.agent.cir.knowledge.domain.possiblesolutions.SolutionKnowl
  *
  */
 public class DomainKnowledge {
-	private GoalKnowledge goals;
-	private String interests;
-	private SolutionKnowledge possible_solutions;
-	
 	private History local_history;
+	private GoalKnowledge goals;
+	private SolutionKnowledge possible_solutions;
+	private String interests;
+	
+	private Stack<ACLMessage> communication;
+	
+	
 	
 	/**
 	 * 
@@ -34,6 +40,8 @@ public class DomainKnowledge {
 		possible_solutions = new SolutionKnowledge();
 		
 		local_history = new History();
+		
+		communication = new Stack<ACLMessage>();
 	}
 	
 	/* ************************
@@ -92,6 +100,25 @@ public class DomainKnowledge {
 	
 	public void removeSolution(Object o) {
 		this.possible_solutions.removeSolution(o);
+	}
+	
+	/* 		Related to Communication 
+	 * ========================================
+	 * */
+	public void updateCommunication(ACLMessage m) {
+		this.communication.addElement(m);
+	}
+	
+	public Stack<ACLMessage> getCommunications() {
+		return this.communication;
+	}
+	
+	public ACLMessage peekCommunication() {
+		return this.communication.peek();
+	}
+	
+	public ACLMessage getCommunication() {
+		return this.communication.pop();
 	}
 	
 	/* ************************

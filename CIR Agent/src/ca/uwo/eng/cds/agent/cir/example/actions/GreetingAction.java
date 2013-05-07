@@ -14,12 +14,12 @@ import ca.uwo.eng.cds.agent.cir.capability.problemsolving.actions.Action;
  * @author geekatron
  *
  */
-public class SolutionAction extends Action {
+public class GreetingAction extends Action {
 	
 	/**
 	 * @param a
 	 */
-	public SolutionAction(CIRAgent a) {
+	public GreetingAction(CIRAgent a) {
 		super(a);
 	}
 
@@ -29,8 +29,8 @@ public class SolutionAction extends Action {
 	@Override
 	public void setupBehaviour() {
 		this.myLogger.log(Logger.INFO, "Setting up Action: " + getClass().getName());
-		this.name = "solution";
-		this.actionDescription = "solution";
+		this.name = "greeting";
+		this.actionDescription = "greeting";
 		
 		this.myLogger.log(Logger.INFO, "Setting up behaviour!");
 		this.behaviour = new SolutionBehaviour(this.agent);

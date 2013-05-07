@@ -179,11 +179,15 @@ public class CIRAgent extends Agent {
 		pre_interaction = new Reasoning(this);
 		
 	}
+	
+	protected void cirSetup() {
+		System.out.println("This is blank!");
+	}
 		
 	protected void setup() {
 		//Initialize the CIR Agent
 		initCIRAgent();
-		
+		cirSetup();
 		/* 
 		 * 		SETUP THE CIR AGENT'S CAPABILITITES 
 		 * */
@@ -198,7 +202,9 @@ public class CIRAgent extends Agent {
 		
 		//Setup all the Problem Solvers and their Actions/Service with the DF
 		//Setup the solve for solution Service
-		this.problem_solver = new ProblemSolver(this, null);
+		//this.problem_solver = new ProblemSolver(this, null);
+		
+//-=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
 		
 //		DFAgentDescription dfd = new DFAgentDescription();
 //		ServiceDescription sd = new ServiceDescription();
@@ -230,5 +236,25 @@ public class CIRAgent extends Agent {
 			doDelete();
 		}
 	}
-	
+
+//	public CIRAgent() {
+//		//Initialize the CIR Agent
+//		initCIRAgent();
+//		
+//		/* 
+//		 * 		SETUP THE CIR AGENT'S CAPABILITITES 
+//		 * */
+//		//Setup the Problem Solving Capabilities
+//		//	Call the problem solver in-order to register it's actions/capabilities
+//		
+//		//Setup the Interaction Capability
+//		
+//		//Setup the Communication Capability
+//		this.communication = new Communication(this);
+//		
+//		
+//		//Setup all the Problem Solvers and their Actions/Service with the DF
+//		//Setup the solve for solution Service
+//		//this.problem_solver = new ProblemSolver(this, null);
+//	}
 }

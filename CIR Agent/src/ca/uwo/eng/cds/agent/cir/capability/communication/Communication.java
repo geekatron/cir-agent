@@ -84,14 +84,21 @@ public class Communication {
 					
 					//Check to see if the content has specified one or more goals: G={}
 					if(content != null && ((content.toLowerCase().indexOf("g={") != -1) || (content.indexOf("g=") != -1)) ) {
+						//Update the Communication Knowledge
+						agent.domain_knowledge.updateCommunication(reply);
 						//Goal is provided - update the Goal Domain Knowledge
 						agent.domain_knowledge.updateGoals(content);
 						
 						//Transition the Mental state to involve the Problem Solver
 						if(agent.transitionState(0)) {
-							//Check to see if the Agent can provide a solution to the request - Call the Problem Solver					
+							//See if the Agent can provide a solution to the request - Call the Problem Solver					
 							agent.getProblemSolvingCapability().solution();
-							//Update Domain Knowledge about request (FIFO)
+							//See if there are any interdependencies - Call the Pre-Interaction
+							agent.getPreInteractionCapability().reason();
+							
+							//Scheduling - NOT CURRENTLY DEALT WITH
+							
+							//Call the appropriate interactions -> Pre-interaction does this?
 						
 							//Update the Goal
 						}

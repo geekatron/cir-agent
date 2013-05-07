@@ -45,7 +45,7 @@ public class ProblemSolver {
 		myLogger.log(Logger.INFO, "Problem solver created! " + getClass().getName());
 		
 		//Initialize the Problem Solver
-		initProblemSolver(a, actions);
+		initProblemSolver(a);
 		
 		if(actions != null && actions.length > 0) {
 			//Setup the actions
@@ -57,7 +57,7 @@ public class ProblemSolver {
 		}
 	}
 
-	private void initProblemSolver(CIRAgent a, Action[] actions) {
+	private void initProblemSolver(CIRAgent a) {
 		myLogger.log(Logger.INFO, "Initiailizing Problem Solver: " + getClass().getName());
 		
 		this.actions = new DataStore();
@@ -126,10 +126,17 @@ public class ProblemSolver {
 		//Look to see if there is an Available Solution
 		//	Check to see the domain knowledge for goals
 		String goal = dk.peekGoal();
+		
+		//Find the Goal description
+		String[] goalPerformative = goal.split("g=");
+		String[] goalDescription = goalPerformative[1].split("\\(");
+		
+		String g = goalDescription[0];
+		
 		//	 Check to see if any Action can satisfy the Goal
-		if(actions.containsKey(goal)) {
+		if(actions.containsKey(g)) {
 			//If there is an action matching the goal add the potential solution to the Potential Solution Knowledge
-			dk.addSolution(goal, ((Action)actions.get(goal)).getName());
+			dk.addSolution(goal, ((Action)actions.get(g)).getName());
 		} 
 		
 		//Go to pre-interaction (If there is no available solution pre-interaction will identify interdependency)
