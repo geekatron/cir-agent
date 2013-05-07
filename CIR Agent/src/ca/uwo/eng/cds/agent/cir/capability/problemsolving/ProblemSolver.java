@@ -44,9 +44,12 @@ public class ProblemSolver {
 	public ProblemSolver(CIRAgent a, Action[] actions) {
 		myLogger.log(Logger.INFO, "Problem solver created! " + getClass().getName());
 		
+		//Initialize the Problem Solver
+		initProblemSolver(a, actions);
+		
 		if(actions != null && actions.length > 0) {
-			//Initialize the Problem Solver
-			initProblemSolver(a, actions);
+			//Setup the actions
+			setupActions(actions);
 			//Register all the actions with the Directory Facilitator
 			registerActions();
 		} else {
@@ -59,7 +62,9 @@ public class ProblemSolver {
 		
 		this.actions = new DataStore();
 		this.agent = a;
-		
+	}
+	
+	private void setupActions(Action[] actions) {
 		myLogger.log(Logger.INFO, "Initiailizing Problem Solver Actions[" + actions.length + "]");
 		for (Action action : actions) {
 			this.actions.put(action.getName(), action);
@@ -115,15 +120,22 @@ public class ProblemSolver {
 	 * the Problem Solver can access.
 	 * @return
 	 */
-	public String solution() {
+	public void solution() {
 		DomainKnowledge dk = this.agent.domain_knowledge;
 		
 		//Look to see if there is an Available Solution
 		//	Check to see the domain knowledge for goals
+		String goal = dk.peekGoal();
+		//	 Check to see if any Action can satisfy the Goal
+		if(actions.containsKey(goal)) {
+			//If there is an action matching the goal add the potential solution to the Potential Solution Knowledge
+			dk.addSolution(goal, ((Action)actions.get(goal)).getName());
+		} 
 		
-		// 	Check to see if any Action can satisfy the Goal
-		//If there is no available solution go to pre-interaction
+		//Go to pre-interaction (If there is no available solution pre-interaction will identify interdependency)
+		this.agent.getPreInteractionCapability().reason();
 		
-		return null;
+		//Transition the mental state (1 -> 2 || Solutions -> Desire)
+		this.agent.transitionState(2);
 	}
 }

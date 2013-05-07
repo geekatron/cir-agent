@@ -83,15 +83,18 @@ public class Communication {
 					agent.domain_knowledge.updateHistory(gson.toJson(history));
 					
 					//Check to see if the content has specified one or more goals: G={}
-					if(content != null && ((content.toLowerCase().indexOf("g={") != -1) || (content.indexOf("g=(") != -1)) ) {
+					if(content != null && ((content.toLowerCase().indexOf("g={") != -1) || (content.indexOf("g=") != -1)) ) {
 						//Goal is provided - update the Goal Domain Knowledge
 						agent.domain_knowledge.updateGoals(content);
-						//Check to see if the Agent can provide a solution to the request - Call the Problem Solver					
-						agent.getProblemSolver().solution();
-						//Update Domain Knowledge about request (FIFO)
 						
-						//Update the Goal
+						//Transition the Mental state to involve the Problem Solver
+						if(agent.transitionState(0)) {
+							//Check to see if the Agent can provide a solution to the request - Call the Problem Solver					
+							agent.getProblemSolvingCapability().solution();
+							//Update Domain Knowledge about request (FIFO)
 						
+							//Update the Goal
+						}
 						//Inform the Requester that the CIR Agent is trying to fulfill the request
 						reply.setPerformative(ACLMessage.INFORM);
 						reply.setContent("Working on fulfilling your request!");

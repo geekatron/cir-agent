@@ -18,10 +18,13 @@ public class DummyCIRAgent extends CIRAgent {
 	 * 
 	 */
 	public DummyCIRAgent() {
+		super();
+		
 		//Setup a problem solver
 		//Action[] actions = new Action[0];
 		//this.problem_solver = new ProblemSolver(this, actions);
-		this.problem_solver = new ProblemSolver(this, null);
+		ProblemSolver ps = new ProblemSolver(this, null);
+		this.problem_solver = ps;
 	}
 
 }
