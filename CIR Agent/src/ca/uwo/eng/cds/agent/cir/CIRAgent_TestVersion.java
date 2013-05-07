@@ -21,7 +21,7 @@ import ca.uwo.eng.cds.agent.cir.capability.communication.Communication;
  * @author geekatron
  *
  */
-public class CIRAgent extends Agent {
+public class CIRAgent_TestVersion extends Agent {
 	//Logger
 	private Logger myLogger = Logger.getMyLogger(getClass().getName());
 	
@@ -173,37 +173,36 @@ public class CIRAgent extends Agent {
 		
 		//Setup the Interaction Capability
 		//Setup the Communication Capability
-		this.communication = new Communication(this);
 		
 		
 		//Setup all the Problem Solvers and their Actions/Service with the DF
 		//Setup the solve for solution Service
-//		DFAgentDescription dfd = new DFAgentDescription();
-//		ServiceDescription sd = new ServiceDescription();
-//		ServiceDescription sd1 = new ServiceDescription();
-//		
-//		sd.setType("solution");
-//		sd.setName(getName());
-//		sd.setOwnership("CDS-Eng");
-//		
-//		sd1.setType("pintout");
-//		sd1.setName(getName());
-//		sd1.setOwnership("CDS-Eng");
-//		
-//		dfd.setName(getAID());
-//		dfd.addServices(sd);
-//		dfd.addServices(sd1);
-//		
+		DFAgentDescription dfd = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		ServiceDescription sd1 = new ServiceDescription();
+		
+		sd.setType("solution");
+		sd.setName(getName());
+		sd.setOwnership("CDS-Eng");
+		
+		sd1.setType("pintout");
+		sd1.setName(getName());
+		sd1.setOwnership("CDS-Eng");
+		
+		dfd.setName(getAID());
+		dfd.addServices(sd);
+		dfd.addServices(sd1);
+		
 		try {
-//			myLogger.log(Logger.INFO, "Trying to register the behaviour with DFD!");
-//			DFService.register(this, dfd);
-//			myLogger.log(Logger.INFO, "Successful registration!");
-//			SolveForSolution SolutionBehaviour = new SolveForSolution(this);
-//			TestBehaviour TestingBehaviour = new TestBehaviour(this);
-//			addBehaviour(SolutionBehaviour);
-//			addBehaviour(TestingBehaviour);
-//			myLogger.log(Logger.INFO, "Added behaviour!");
-		} catch (Exception e) {
+			myLogger.log(Logger.INFO, "Trying to register the behaviour with DFD!");
+			DFService.register(this, dfd);
+			myLogger.log(Logger.INFO, "Successful registration!");
+			SolveForSolution SolutionBehaviour = new SolveForSolution(this);
+			TestBehaviour TestingBehaviour = new TestBehaviour(this);
+			addBehaviour(SolutionBehaviour);
+			addBehaviour(TestingBehaviour);
+			myLogger.log(Logger.INFO, "Added behaviour!");
+		} catch (FIPAException e) {
 			myLogger.log(Logger.SEVERE, "Agent " + getLocalName() + " - Cannot register with DF", e);
 			doDelete();
 		}
