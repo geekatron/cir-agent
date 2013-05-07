@@ -16,6 +16,9 @@ import jade.util.Logger;
 import java.util.Stack;
 
 import ca.uwo.eng.cds.agent.cir.capability.communication.Communication;
+import ca.uwo.eng.cds.agent.cir.capability.problemsolving.ProblemSolver;
+import ca.uwo.eng.cds.agent.cir.knowledge.DomainKnowledge;
+import ca.uwo.eng.cds.agent.cir.knowledge.domain.localhistory.History;
 
 /**
  * @author geekatron
@@ -40,8 +43,7 @@ public class CIRAgent extends Agent {
 	 * 		- other agent model
 	 * */
 	//Domain Knowledge
-	protected DataStore domain_knowledge;
-	protected Stack<String> local_history;
+	public DomainKnowledge domain_knowledge;	
 	//Model Knowledge
 	protected DataStore model_knowledge;
 	
@@ -64,11 +66,37 @@ public class CIRAgent extends Agent {
 	 * 			-- i.e. Request Communication Handler?
 	 * */
 	//Problem Solving
-	protected Object problem_solver;
+	protected ProblemSolver problem_solver;
 	//Interaction
 	protected DataStore interactions;
 	//Communication
-	protected Object communication;
+	protected Communication communication;
+	
+	/* ======================
+	 * 		GOAL STATE 
+	 * ======================
+	 * 	The Mental State of the Goal as it is going through the different stages.
+	 * 		State:
+	 * 			- Goal 			-> 0
+	 * 			- Solutions		-> 1
+	 * 			- Desire		-> 2		
+	 * 			- Commitment	-> 3
+	 * 			- Intention		-> 4
+	 * */
+	private int mental_state = 0; 
+	
+	/* ************************
+	 * 	GETTER AND SETTERS
+	 * ************************
+	 */
+	public ProblemSolver getProblemSolver() {
+		return this.problem_solver;
+	}
+	
+	/* ************************
+	 * 	END GETTER AND SETTERS
+	 * ************************
+	 */
 	
 	/**
 	 * Initialize the CIR Agent 
@@ -77,89 +105,15 @@ public class CIRAgent extends Agent {
 		myLogger.log(Logger.INFO, "Initializing CIR Agent!");
 		
 		//Initialize the Domain and Model Knowledge
-		domain_knowledge = new DataStore();
-		local_history = new Stack<String>();
+		domain_knowledge = new DomainKnowledge();
 		model_knowledge = new DataStore();
 		
 		//Initialize the Capabilities
-		problem_solver = new Object();
 		interactions = new DataStore(6);
-		communication = new Object();
+		problem_solver = null;
+		communication = null;
 		
 	}
-	
-	private class TestBehaviour extends CyclicBehaviour {
-
-		public TestBehaviour(Agent a) {
-			super(a);
-		}
-		
-		@Override
-		public void action() {
-			ACLMessage msg = myAgent.receive();
-			
-			if(msg != null) {
-			
-			myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received SOLUTION/PS Request from "+msg.getSender().getLocalName());
-			myLogger.log(Logger.INFO, "Message performative "+ ACLMessage.getPerformative(msg.getPerformative()));
-			myLogger.log(Logger.INFO, "Message content "+ msg.getContent());
-			
-			ACLMessage reply = msg.createReply();
-			reply.setPerformative(ACLMessage.INFORM);
-			reply.setContent("Received!");
-			
-			send(reply); 
-			} else {
-				block();
-			}
-		}
-		
-	}
-	
-	private class SolveForSolution extends CyclicBehaviour {
-			
-			public SolveForSolution(Agent a) {
-				super(a);
-			}
-	
-			@Override
-			public void action() {
-				// TODO Auto-generated method stub
-				ACLMessage msg = myAgent.receive();
-				
-				if(msg != null) {
-					ACLMessage reply = msg.createReply();
-					
-					//Check to see if the message performative is a Request type
-					if(msg.getPerformative() == ACLMessage.REQUEST) {
-						String content = msg.getContent();
-						if((content != null) && (content.indexOf("PS:") != -1)) {
-							myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received SOLUTION/PS Request from "+msg.getSender().getLocalName());
-							myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Received the following Solution/PS Request "+ msg.getContent());
-							
-							//Check to see if the Problem Can be Solved - Solution?
-							
-							reply.setPerformative(ACLMessage.INFORM);
-							reply.setContent("pong");
-						} else {
-							myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Unexpected request ["+content+"] received from "+msg.getSender().getLocalName());
-							reply.setPerformative(ACLMessage.REFUSE);
-							reply.setContent("( UnexpectedContent ("+content+"))");
-						} //END IF-ELSE content evaluation
-					} else {
-						//Indicate that the Behaviour does not understand the specified message
-						myLogger.log(Logger.INFO, "Agent "+getLocalName()+" - Unexpected message ["+ACLMessage.getPerformative(msg.getPerformative())+"] received from "+msg.getSender().getLocalName());
-						reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-						reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+") )");  
-					}//END IF-ELSE Performative
-					//Send a reply
-					send(reply);
-				} else {
-					block();
-				}//END IF-ELSE msg != null
-			}
-			
-		}//END SolveForSolution
 		
 	protected void setup() {
 		//Initialize the CIR Agent
@@ -172,12 +126,14 @@ public class CIRAgent extends Agent {
 		//	Call the problem solver in-order to register it's actions/capabilities
 		
 		//Setup the Interaction Capability
+		
 		//Setup the Communication Capability
 		this.communication = new Communication(this);
 		
 		
 		//Setup all the Problem Solvers and their Actions/Service with the DF
 		//Setup the solve for solution Service
+		
 //		DFAgentDescription dfd = new DFAgentDescription();
 //		ServiceDescription sd = new ServiceDescription();
 //		ServiceDescription sd1 = new ServiceDescription();

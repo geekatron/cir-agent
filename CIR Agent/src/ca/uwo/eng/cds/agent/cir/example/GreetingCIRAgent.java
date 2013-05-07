@@ -12,16 +12,17 @@ import ca.uwo.eng.cds.agent.cir.example.actions.SolutionAction;
  * @author geekatron
  *
  */
-public class DummyCIRAgent extends CIRAgent {
+public class GreetingCIRAgent extends CIRAgent {
 
 	/**
-	 * 
+	 * Setup a CIRAgent with the required Actions
 	 */
-	public DummyCIRAgent() {
+	public GreetingCIRAgent() {
 		//Setup a problem solver
-		//Action[] actions = new Action[0];
-		//this.problem_solver = new ProblemSolver(this, actions);
-		this.problem_solver = new ProblemSolver(this, null);
+		Action[] actions = new Action[1];
+		actions[0] = new SolutionAction(this);
+		
+		this.problem_solver = new ProblemSolver(this, actions);
 	}
 
 }

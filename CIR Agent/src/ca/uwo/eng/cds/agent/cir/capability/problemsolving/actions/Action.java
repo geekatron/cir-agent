@@ -26,7 +26,7 @@ public abstract class Action {
 	protected DataStore postConditions;
 	protected String actionBody = "";
 	
-	protected CyclicBehaviour behaviour;
+	protected Behaviour behaviour;
 	
 	public String getName() {
 		return name;
@@ -38,8 +38,12 @@ public abstract class Action {
 		this.actionDescription = name;
 	}
 	
+	public String getOwnership() {
+		return this.ownership;
+	}
+	
 	public Behaviour getBehaviour() {
-		return behaviour;
+		return this.behaviour;
 	}
 	
 	public abstract void setupBehaviour();
