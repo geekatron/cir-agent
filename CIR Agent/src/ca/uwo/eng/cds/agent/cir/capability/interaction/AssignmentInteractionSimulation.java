@@ -55,11 +55,21 @@ public class AssignmentInteractionSimulation {
 			candidate = candidates.get(0);
 		}
 		//Msg the candidate for execution
-		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-		msg.setContent("g=" + goal);
-		msg.addReceiver(candidate);
+//		ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+//		msg.setContent("g=" + goal);
+//		msg.addReceiver(candidate);
+//		
+//		this.agent.send(msg);
 		
-		this.agent.send(msg);
+		//SIMULATE THE PRINT OUT
+		//Find the Goal description
+		String[] goalDescription = goal.split("\\(");
+		String g = goalDescription[0];
+		//Parse out the Goal Data
+		int end = goalDescription[1].length()-1;
+		String data = goalDescription[1].substring(0, end); 
+		
+		System.out.println(data);
 	}
 
 }
