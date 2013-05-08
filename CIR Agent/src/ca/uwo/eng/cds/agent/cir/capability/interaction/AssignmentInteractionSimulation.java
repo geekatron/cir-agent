@@ -48,6 +48,7 @@ public class AssignmentInteractionSimulation {
 		myLogger.log(Logger.INFO, "Agent "+agent.getLocalName() + " SIMULATION INTERACTING!");
 		//Randomly pick one of the candidates
 		if(candidates.size() > 1) {
+			myLogger.log(Logger.INFO, "Agent "+agent.getLocalName() + " Selecing Candidate!");
 			int index = new Random().nextInt(candidates.size());
 			candidate = candidates.get(index);
 		} else {
@@ -62,6 +63,7 @@ public class AssignmentInteractionSimulation {
 //		this.agent.send(msg);
 		
 		//SIMULATE THE PRINT OUT
+		myLogger.log(Logger.INFO, "Agent "+agent.getLocalName() + " selected candidate: " + candidate);
 		//Find the Goal description
 		String[] goalDescription = goal.split("\\(");
 		String g = goalDescription[0];
