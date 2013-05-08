@@ -5,6 +5,7 @@ package ca.uwo.eng.cds.agent.cir.example.actions;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.DataStore;
 import jade.lang.acl.ACLMessage;
 import jade.util.Logger;
 import ca.uwo.eng.cds.agent.cir.CIRAgent;
@@ -43,33 +44,11 @@ public class GreetingAction extends Action {
 
 		@Override
 		public void action() {
-			ACLMessage msg = myAgent.receive();
-			if(msg != null) {
-				ACLMessage reply = msg.createReply();
-				//We received a request
-				if(msg.getPerformative() == ACLMessage.REQUEST) {
-					//Check for the content
-					String content = msg.getContent();
-					if(content != null) {
-						//Check to see if the Agent can provide a solution to the request
-					} else {
-						//No content - respond that we cannot deal with blank request (REFUSE)
-						myLogger.log(Logger.INFO, "Agent "+ myAgent.getLocalName()+" - Unexpected request ["+content+"] received from "+msg.getSender().getLocalName());
-						reply.setPerformative(ACLMessage.REFUSE);
-						reply.setContent("( UnexpectedContent ("+content+"))");
-					}
-				} else {
-					//Cannot understand the Performative
-					myLogger.log(Logger.INFO, "Agent "+ myAgent.getLocalName() +" - Unexpected message ["+ACLMessage.getPerformative(msg.getPerformative())+"] received from "+msg.getSender().getLocalName());
-					reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
-					reply.setContent("( (Unexpected-act "+ACLMessage.getPerformative(msg.getPerformative())+") )");
-				}
-				//Send the reply
-				myAgent.send(reply);
-			} else {
-				//Null message - block until message received
-				block();
-			}
+			DataStore ds = this.getDataStore();
+			
+			String data = (String) ds.get("data");
+			
+			System.out.println("GREETING: " + data);
 		}
 		
 	}//END of inner class SolutionBehaviour

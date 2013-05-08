@@ -157,6 +157,14 @@ public class CIRAgent extends Agent {
 		return this.pre_interaction;
 	}
 	
+	public DataStore getInteractions() {
+		return interactions;
+	}
+	
+	public void setInteraction(String key, Object interaction) {
+		interactions.put(key, interaction);
+	}
+	
 	/* ************************
 	 * 	END GETTER AND SETTERS
 	 * ************************

@@ -9,11 +9,13 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import jade.util.Logger;
 
 import java.util.Iterator;
 
 import ca.uwo.eng.cds.agent.cir.CIRAgent;
+import ca.uwo.eng.cds.agent.cir.capability.interaction.AssignmentInteractionSimulation;
 import ca.uwo.eng.cds.agent.cir.capability.problemsolving.actions.Action;
 import ca.uwo.eng.cds.agent.cir.knowledge.DomainKnowledge;
 
@@ -156,6 +158,9 @@ public class ProblemSolver {
 			dk.addSolution(goal, ((Action)actions.get(g)).getName());
 		} 
 		
+		//Done the problem solving - mental state = solutions
+		this.agent.nextState();
+		
 		//Go to pre-interaction (If there is no available solution pre-interaction will identify interdependency)
 		this.agent.getPreInteractionCapability().reason();
 		
@@ -174,7 +179,15 @@ public class ProblemSolver {
 			
 			//Pass the DataStore representing the knowledge for the Action/Behaviour
 			DataStore ds = new DataStore();
+			//Parse out the Goal Data
+			int end = goalDescription[1].length()-1;
+			String data = goalDescription[1].substring(0, end); 
+			
+			ds.put("data", data);
+			
+			//Set the Data Store
 			action.getBehaviour().setDataStore(ds);
+			//Execute the action
 			action.getBehaviour().action();
 			
 			//Remove the Goal - pop it off the stack
@@ -187,7 +200,29 @@ public class ProblemSolver {
 		} 
 		//Potential Solution being an interaction will result in mental-state of 2 || desire
 		else if(this.agent.getMentalState() == 2) {
+			//Execute the INTERACTION!
+			//Check to see that an interaction has been added to the Interaction Capabilities
+			if(!this.agent.getInteractions().isEmpty()) {
+				String[] candidates = new String[5];
+				candidates[0] = "";
+				//If interactions are specified, execute them
+				AssignmentInteractionSimulation assignment = (AssignmentInteractionSimulation) this.agent.getInteractions().get("ASSIGNMENT");
+				assignment.interact();
+				
+				//Remove the Goal - pop it off the stack
+				goal = dk.getGoal();
+			} else {
+				//Remove the Goal - pop it off the stack
+				goal = dk.getGoal();
+				//Set the response to indicate it can't be achieved
+				ACLMessage reply = agent.domain_knowledge.getCommunication();
+				reply.setPerformative(ACLMessage.INFORM);
+				reply.setContent("DNE");
+			}
 			
+			//Transition to Intention
+			this.agent.nextState();
+			this.agent.nextState();
 		}
 
 		//Return the response to Communication

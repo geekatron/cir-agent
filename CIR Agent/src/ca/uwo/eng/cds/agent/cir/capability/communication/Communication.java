@@ -89,27 +89,12 @@ public class Communication {
 						//Goal is provided - update the Goal Domain Knowledge
 						agent.domain_knowledge.updateGoals(content);
 						
-						//Transition the Mental state to involve the Problem Solver
-						if(agent.transitionState(0)) {
-							//See if the Agent can provide a solution to the request - Call the Problem Solver					
-							agent.getProblemSolvingCapability().solution();
-							//See if there are any interdependencies - Call the Pre-Interaction
-							//agent.getPreInteractionCapability().reason(); //Called from the Problem Solver
-							
-							//Scheduling - NOT CURRENTLY DEALT WITH
-							
-							//Call the appropriate interactions -> Pre-interaction does this?
+						beginCIRProcess();
 						
-							//Inform the initiator that the response is complete
-							ACLMessage cirReply = agent.domain_knowledge.getCommunication();
-							cirReply.setContent("sent");
-							agent.send(cirReply);
-							
-							//If there are still more goals try to solve them --- How to trigger the behaviour again
-						}
 						//Inform the Requester that the CIR Agent is trying to fulfill the request
 						reply.setPerformative(ACLMessage.INFORM);
-						reply.setContent("Working on fulfilling your request!");
+						//reply.setContent("Working on fulfilling your request!");
+						reply.setContent("sent");
 					} else {
 						//No content - respond that we cannot deal with blank request (REFUSE)
 						myLogger.log(Logger.INFO, "Agent "+ myAgent.getLocalName()+" - Unexpected request ["+content+"] received from "+msg.getSender().getLocalName());
@@ -143,11 +128,15 @@ public class Communication {
 				//Call the appropriate interactions -> Pre-interaction does this?
 			
 				//Inform the initiator that the response is complete
-				ACLMessage cirReply = agent.domain_knowledge.getCommunication();
-				cirReply.setContent("sent");
-				agent.send(cirReply);
+				//ACLMessage cirReply = agent.domain_knowledge.getCommunication();
+				//cirReply.setContent("sent");
+				//agent.send(cirReply);
 				
 				//If there are still more goals try to solve them --- How to trigger the behaviour again
+				if(agent.domain_knowledge.getGoals().size() > 0) {
+					//If there are more goals, try to solve them
+					beginCIRProcess();
+				}
 			}
 		}
 		
