@@ -28,8 +28,9 @@ public class DummyCIRAgent extends CIRAgent {
 //	}
 	
 	protected void cirSetup() {
-		ProblemSolver ps = new ProblemSolver(this, null);
-		this.problem_solver = ps;
+		//ProblemSolver ps = new ProblemSolver(this, null);
+		//this.problem_solver = ps;
+		this.problem_solver.setupPS(null);
 	}
 
 }

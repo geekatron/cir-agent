@@ -29,7 +29,8 @@ public class GreetingCIRAgent extends CIRAgent {
 		Action[] actions = new Action[1];
 		actions[0] = new GreetingAction(this);
 		
-		this.problem_solver = new ProblemSolver(this, actions);
+		//this.problem_solver = new ProblemSolver(this, actions);
+		this.problem_solver.setupPS(actions);
 		
 		System.out.println("Added Problem Solver to CIR Agent!");
 	}

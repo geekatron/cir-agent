@@ -187,7 +187,7 @@ public class CIRAgent extends Agent {
 	protected void setup() {
 		//Initialize the CIR Agent
 		initCIRAgent();
-		cirSetup();
+		
 		/* 
 		 * 		SETUP THE CIR AGENT'S CAPABILITITES 
 		 * */
@@ -202,8 +202,11 @@ public class CIRAgent extends Agent {
 		
 		//Setup all the Problem Solvers and their Actions/Service with the DF
 		//Setup the solve for solution Service
-		//this.problem_solver = new ProblemSolver(this, null);
+		this.problem_solver = new ProblemSolver(this);
 		
+		cirSetup();
+		
+		System.out.println("Ran cirSetup()!");
 //-=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=-
 		
 //		DFAgentDescription dfd = new DFAgentDescription();

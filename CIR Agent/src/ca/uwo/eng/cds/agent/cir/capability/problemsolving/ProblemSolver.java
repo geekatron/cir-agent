@@ -34,13 +34,20 @@ import ca.uwo.eng.cds.agent.cir.knowledge.DomainKnowledge;
  *
  */
 public class ProblemSolver {
-	private Logger myLogger = Logger.getMyLogger(getClass().getName());
+	Logger myLogger = Logger.getMyLogger(getClass().getName());
 	
 	private CIRAgent agent;
 	private DataStore actions;
 	/**
 	 * 
 	 */
+	public ProblemSolver(CIRAgent a) {
+		myLogger.log(Logger.INFO, "Problem solver created! " + getClass().getName());
+		
+		//Initialize the Problem Solver
+		initProblemSolver(a);
+	}
+	
 	public ProblemSolver(CIRAgent a, Action[] actions) {
 		myLogger.log(Logger.INFO, "Problem solver created! " + getClass().getName());
 		
@@ -52,6 +59,17 @@ public class ProblemSolver {
 			setupActions(actions);
 			//Register all the actions with the Directory Facilitator
 			registerActions();
+		} else {
+			myLogger.log(Logger.INFO, "No actions to initiate with Problem Solver!");
+		}
+	}
+	
+	public void setupPS(Action[] actions) {
+		if(actions != null && actions.length > 0) {
+			//Setup the actions
+			setupActions(actions);
+			//Register all the actions with the Directory Facilitator
+			registerActions(); //Actions become null after registerActions() runs!!!
 		} else {
 			myLogger.log(Logger.INFO, "No actions to initiate with Problem Solver!");
 		}
@@ -98,8 +116,7 @@ public class ProblemSolver {
 	        
 	        //Output to console - debugging
 	        System.out.println(key + " = " + this.actions.get(key));
-	        //Remove from the iterator
-	        it.remove(); // avoids a ConcurrentModificationException
+	        
 	    }
 	    
 	    //Try to register the Service Descriptions with the DF
@@ -142,7 +159,40 @@ public class ProblemSolver {
 		//Go to pre-interaction (If there is no available solution pre-interaction will identify interdependency)
 		this.agent.getPreInteractionCapability().reason();
 		
+		//Check to see if the potential solution is an action or interaction
+		//	IF it is an action
+		//		Execute the action
+		//		Transition the state from 3 -> 4 || commitment -> intention
+		//	IF it is an interaction
+		//		Execute the appropriate interaction
+		//		Transition the state from 2 -> 3 || desire -> commitment
+		//		Transition the state from 3 -> 4 || desire -> commitment
+		
+		//Potential Solution being an action will result in mental-state of 3 || commitment
+		if(this.agent.getMentalState() == 3) {
+			Action action = (Action) actions.get(g);
+			
+			//Pass the DataStore representing the knowledge for the Action/Behaviour
+			DataStore ds = new DataStore();
+			action.getBehaviour().setDataStore(ds);
+			action.getBehaviour().action();
+			
+			//Remove the Goal - pop it off the stack
+			goal = dk.getGoal();
+			//Remove the Solution
+			dk.removeSolutionByKey(goal);
+			
+			//Transition to Intention
+			this.agent.nextState();
+		} 
+		//Potential Solution being an interaction will result in mental-state of 2 || desire
+		else if(this.agent.getMentalState() == 2) {
+			
+		}
+
+		//Return the response to Communication
+		
 		//Transition the mental state (1 -> 2 || Solutions -> Desire)
-		this.agent.transitionState(2);
+		//this.agent.transitionState(2);
 	}
 }

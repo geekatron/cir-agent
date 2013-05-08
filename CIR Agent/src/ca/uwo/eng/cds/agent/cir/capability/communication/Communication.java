@@ -94,13 +94,18 @@ public class Communication {
 							//See if the Agent can provide a solution to the request - Call the Problem Solver					
 							agent.getProblemSolvingCapability().solution();
 							//See if there are any interdependencies - Call the Pre-Interaction
-							agent.getPreInteractionCapability().reason();
+							//agent.getPreInteractionCapability().reason(); //Called from the Problem Solver
 							
 							//Scheduling - NOT CURRENTLY DEALT WITH
 							
 							//Call the appropriate interactions -> Pre-interaction does this?
 						
-							//Update the Goal
+							//Inform the initiator that the response is complete
+							ACLMessage cirReply = agent.domain_knowledge.getCommunication();
+							cirReply.setContent("sent");
+							agent.send(cirReply);
+							
+							//If there are still more goals try to solve them --- How to trigger the behaviour again
 						}
 						//Inform the Requester that the CIR Agent is trying to fulfill the request
 						reply.setPerformative(ACLMessage.INFORM);
@@ -126,6 +131,26 @@ public class Communication {
 			
 		}
 		
-	}
+		private void beginCIRProcess() {
+			if(agent.transitionState(0)) {
+				//See if the Agent can provide a solution to the request - Call the Problem Solver					
+				agent.getProblemSolvingCapability().solution();
+				//See if there are any interdependencies - Call the Pre-Interaction
+				//agent.getPreInteractionCapability().reason(); //Called from the Problem Solver
+				
+				//Scheduling - NOT CURRENTLY DEALT WITH
+				
+				//Call the appropriate interactions -> Pre-interaction does this?
+			
+				//Inform the initiator that the response is complete
+				ACLMessage cirReply = agent.domain_knowledge.getCommunication();
+				cirReply.setContent("sent");
+				agent.send(cirReply);
+				
+				//If there are still more goals try to solve them --- How to trigger the behaviour again
+			}
+		}
+		
+	}//END CommunicationBehaviour
 
 }
